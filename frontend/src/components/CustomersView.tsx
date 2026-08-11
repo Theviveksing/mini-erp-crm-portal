@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE } from '../config';
 import { Search, Plus, Calendar, Edit, ClipboardList, Info } from 'lucide-react';
 
 interface Customer {
@@ -78,7 +79,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({ token, userRole })
         type: typeFilter
       });
 
-      const response = await fetch(`http://localhost:5000/api/customers?${queryParams}`, {
+      const response = await fetch(`${API_BASE}/api/customers?${queryParams}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -96,7 +97,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({ token, userRole })
 
   const fetchCustomerDetails = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/customers/${id}`, {
+      const response = await fetch(`${API_BASE}/api/customers/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -127,7 +128,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({ token, userRole })
 
     setIsSubmittingNote(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/customers/${selectedCustomerId}/notes`, {
+      const response = await fetch(`${API_BASE}/api/customers/${selectedCustomerId}/notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -201,8 +202,8 @@ export const CustomersView: React.FC<CustomersViewProps> = ({ token, userRole })
 
     try {
       const url = editingCustomer
-        ? `http://localhost:5000/api/customers/${editingCustomer.id}`
-        : 'http://localhost:5000/api/customers';
+        ? `${API_BASE}/api/customers/${editingCustomer.id}`
+        : `${API_BASE}/api/customers`;
       const method = editingCustomer ? 'PUT' : 'POST';
 
       const response = await fetch(url, {

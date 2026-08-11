@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE } from '../config';
 import { jsPDF } from 'jspdf';
 import { Search, Plus, Trash2, FileText, Download, Check, X, Printer, ShieldAlert } from 'lucide-react';
 
@@ -76,7 +77,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
         status: statusFilter
       });
 
-      const response = await fetch(`http://localhost:5000/api/challans?${queryParams}`, {
+      const response = await fetch(`${API_BASE}/api/challans?${queryParams}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -93,7 +94,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
 
   const fetchChallanDetails = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/challans/${id}`, {
+      const response = await fetch(`${API_BASE}/api/challans/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -119,8 +120,8 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
     try {
       const headers = { Authorization: `Bearer ${token}` };
       const [custRes, prodRes] = await Promise.all([
-        fetch('http://localhost:5000/api/customers?limit=100', { headers }),
-        fetch('http://localhost:5000/api/products?limit=100', { headers })
+        fetch(`${API_BASE}/api/customers?limit=100`, { headers }),
+        fetch(`${API_BASE}/api/products?limit=100`, { headers })
       ]);
 
       if (custRes.ok) {
@@ -191,7 +192,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
         quantity: item.quantity
       }));
 
-      const response = await fetch('http://localhost:5000/api/challans', {
+      const response = await fetch(`${API_BASE}/api/challans`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -221,7 +222,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
   const handleConfirmChallan = async (id: number) => {
     if (!window.confirm('Are you sure you want to CONFIRM this challan? Stock levels will be reduced.')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/challans/${id}/confirm`, {
+      const response = await fetch(`${API_BASE}/api/challans/${id}/confirm`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -240,7 +241,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
   const handleCancelChallan = async (id: number) => {
     if (!window.confirm('Are you sure you want to CANCEL this challan? Stock will be returned if confirmed.')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/challans/${id}/cancel`, {
+      const response = await fetch(`${API_BASE}/api/challans/${id}/cancel`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` }
       });

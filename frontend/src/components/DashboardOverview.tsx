@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE } from '../config';
 import {
   Users,
   Package,
@@ -36,10 +37,10 @@ export const DashboardOverview: React.FC<DashboardProps> = ({ user, token, setAc
         const headers = { Authorization: `Bearer ${token}` };
 
         // Fetch counts from paginated endpoints
-        const custRes = await fetch('http://localhost:5000/api/customers?limit=1', { headers });
-        const prodRes = await fetch('http://localhost:5000/api/products?limit=1', { headers });
-        const lowRes = await fetch('http://localhost:5000/api/products?lowStock=true&limit=1', { headers });
-        const chalRes = await fetch('http://localhost:5000/api/challans?limit=1', { headers });
+        const custRes = await fetch(`${API_BASE}/api/customers?limit=1`, { headers });
+        const prodRes = await fetch(`${API_BASE}/api/products?limit=1`, { headers });
+        const lowRes = await fetch(`${API_BASE}/api/products?lowStock=true&limit=1`, { headers });
+        const chalRes = await fetch(`${API_BASE}/api/challans?limit=1`, { headers });
 
         let custTotal = 0;
         let prodTotal = 0;

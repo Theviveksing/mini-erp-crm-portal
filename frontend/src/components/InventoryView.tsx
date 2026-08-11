@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_BASE } from '../config';
 import { Search, Plus, Edit, AlertTriangle, ArrowUpDown, ClipboardList, Info } from 'lucide-react';
 
 interface Product {
@@ -81,7 +82,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ token, userRole })
         lowStock: lowStockFilter.toString()
       });
 
-      const response = await fetch(`http://localhost:5000/api/products?${queryParams}`, {
+      const response = await fetch(`${API_BASE}/api/products?${queryParams}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -100,7 +101,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ token, userRole })
   const fetchMovements = async (productId: number) => {
     setIsLogsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}/movements`, {
+      const response = await fetch(`${API_BASE}/api/products/${productId}/movements`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await response.json();
@@ -169,8 +170,8 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ token, userRole })
 
     try {
       const url = editingProduct
-        ? `http://localhost:5000/api/products/${editingProduct.id}`
-        : 'http://localhost:5000/api/products';
+        ? `${API_BASE}/api/products/${editingProduct.id}`
+        : `${API_BASE}/api/products`;
       const method = editingProduct ? 'PUT' : 'POST';
 
       const bodyData = editingProduct
@@ -235,7 +236,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ token, userRole })
     try {
       const changeVal = parseInt(quantityChanged) * (isIncrement ? 1 : -1);
 
-      const response = await fetch(`http://localhost:5000/api/products/${adjustingProduct?.id}/adjust-stock`, {
+      const response = await fetch(`${API_BASE}/api/products/${adjustingProduct?.id}/adjust-stock`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
