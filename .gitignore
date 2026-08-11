@@ -1,0 +1,22 @@
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+
+# Local databases & logs
+*.db
+*.db-journal
+*.log
+
+# Environment variables
+.env
+**/.env
+
+# IDE / OS junk
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store

@@ -1,0 +1,589 @@
+{
+  "info": {
+    "_postman_id": "7f87a8a6-574d-4569-8db2-df5161fae4bb",
+    "name": "Mini ERP + CRM API",
+    "description": "API collection for testing and verifying the Mini ERP + CRM Operations Portal.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticate user credentials and receive JWT access token. Demo usernames: admin, sales, warehouse, accounts. Password: <username>123"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Session",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Retrieve profile information of the currently authenticated JWT token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CRM Customers",
+      "item": [
+        {
+          "name": "List Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers?page=1&limit=10&q=&status=ACTIVE&type=WHOLESALE",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "q",
+                  "value": "",
+                  "description": "Search query text matching name or business"
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE",
+                  "description": "Filter by LEAD, ACTIVE, or INACTIVE"
+                },
+                {
+                  "key": "type",
+                  "value": "WHOLESALE",
+                  "description": "Filter by RETAIL, WHOLESALE, or DISTRIBUTOR"
+                }
+              ]
+            },
+            "description": "Retrieve paginated, filterable, and searchable list of customer entities."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/customers/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "1"
+              ]
+            },
+            "description": "Get detailed attributes and complete follow-up notes timeline history of a single customer."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rajesh Patil\",\n  \"mobile\": \"9823456789\",\n  \"email\": \"procurement@patilsports.com\",\n  \"businessName\": \"Patil Sports Distributors\",\n  \"gstNumber\": \"27AAACP9988D1Z2\",\n  \"customerType\": \"DISTRIBUTOR\",\n  \"address\": \"Shop 4, Deccan Plaza, FC Road, Pune, MH - 411004\",\n  \"status\": \"LEAD\",\n  \"notes\": \"Interested in bulk orders of Footwear starting next quarter.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            },
+            "description": "Create a new customer lead or active registry. Allowed roles: ADMIN, SALES."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\",\n  \"followUpDate\": \"2026-09-01\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "1"
+              ]
+            },
+            "description": "Update details of an existing customer record. Allowed roles: ADMIN, SALES."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Follow-up Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Discussed wholesale discounts for winter collection. Arranging catalog catalog delivery.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/customers/1/notes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "customers",
+                "1",
+                "notes"
+              ]
+            },
+            "description": "Append a new follow-up interaction note log. Allowed roles: ADMIN, SALES."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product Inventory",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products?page=1&limit=10&q=&lowStock=false",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "q",
+                  "value": "",
+                  "description": "Search keyword matching name or SKU"
+                },
+                {
+                  "key": "lowStock",
+                  "value": "false",
+                  "description": "Set to true to filter items below minStockAlert quantity"
+                }
+              ]
+            },
+            "description": "Get catalog list, highlight low stock. Available to all authenticated roles."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Heavy Duty Steel Shelving\",\n  \"sku\": \"SHL-STL-006\",\n  \"category\": \"Warehouse Equipment\",\n  \"unitPrice\": 4500,\n  \"currentStock\": 15,\n  \"minStockAlert\": 5,\n  \"location\": \"Aisle 12, Shelf D\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "description": "Add new inventory product. Allowed roles: ADMIN, WAREHOUSE."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"unitPrice\": 4650,\n  \"minStockAlert\": 6\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "1"
+              ]
+            },
+            "description": "Edit product attributes metadata. Allowed roles: ADMIN, WAREHOUSE."
+          },
+          "response": []
+        },
+        {
+          "name": "Adjust Product Stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantityChanged\": 25,\n  \"reason\": \"Supplier weekly replenishment consignment received\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/products/1/adjust-stock",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "1",
+                "adjust-stock"
+              ]
+            },
+            "description": "Post custom stock increment or decrement log. Decrements must be negative e.g. -5. Allowed roles: ADMIN, WAREHOUSE."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Stock Movements Log",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/products/1/movements",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "1",
+                "movements"
+              ]
+            },
+            "description": "View full transaction history ledger of all IN/OUT movements for a specific product. Allowed roles: ADMIN, WAREHOUSE."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sales Challans",
+      "item": [
+        {
+          "name": "List Challans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/challans?page=1&limit=10&status=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "challans"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by DRAFT, CONFIRMED, CANCELLED"
+                }
+              ]
+            },
+            "description": "List all business sales challans. Available to all authenticated roles."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Challan Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/challans/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "challans",
+                "1"
+              ]
+            },
+            "description": "Get single challan record showing details, customer info, and parsed item snapshot array."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Sales Challan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": 1,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 5\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 10\n    }\n  ],\n  \"status\": \"DRAFT\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/challans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "challans"
+              ]
+            },
+            "description": "Generate a sales challan. If status is CONFIRMED, database will check product quantities and deduct them. Allowed roles: ADMIN, SALES."
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm Draft Challan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/challans/1/confirm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "challans",
+                "1",
+                "confirm"
+              ]
+            },
+            "description": "Transition a DRAFT challan to CONFIRMED status, reducing inventory stocks. Allowed roles: ADMIN, SALES."
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Challan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/challans/1/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "challans",
+                "1",
+                "cancel"
+              ]
+            },
+            "description": "Cancel a challan. If the challan was CONFIRMED, inventory stock quantities will automatically be returned to products. Allowed roles: ADMIN, SALES."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_JWT_TOKEN_HERE",
+      "type": "string"
+    }
+  ]
+}

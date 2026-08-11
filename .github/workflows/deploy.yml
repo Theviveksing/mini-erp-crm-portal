@@ -1,0 +1,41 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        
+    - name: Install Backend Dependencies
+      run: |
+        cd backend
+        npm ci
+        
+    - name: Run Prisma Validate
+      run: |
+        cd backend
+        npx prisma validate
+        
+    - name: Build Backend
+      run: |
+        cd backend
+        npm run build
+
+    - name: Install Frontend Dependencies
+      run: |
+        cd frontend
+        npm ci --legacy-peer-deps
+        
+    - name: Build Frontend
+      run: |
+        cd frontend
+        npm run build
