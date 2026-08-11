@@ -73,3 +73,43 @@ export const getMe = async (req: RequestWithUser, res: Response) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+export const updateProfile = async (req: RequestWithUser, res: Response) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { name } = req.body;
+
+  if (!name || !name.trim()) {
+    return res.status(400).json({ error: 'Name is required' });
+  }
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: req.user.id },
+      data: { name: name.trim() }
+    });
+
+    // Generate a new token with the updated name
+    const token = jwt.sign(
+      { id: updatedUser.id, username: updatedUser.username, name: updatedUser.name, role: updatedUser.role },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    return res.json({
+      token,
+      user: {
+        id: updatedUser.id,
+        username: updatedUser.username,
+        name: updatedUser.name,
+        role: updatedUser.role
+      }
+    });
+  } catch (error: any) {
+    console.error('updateProfile error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+

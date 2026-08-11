@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { authenticateJWT, requireRole } from './middlewares/auth';
-import { login, getMe } from './controllers/auth';
+import { login, getMe, updateProfile } from './controllers/auth';
 import {
   getCustomers,
   getCustomerById,
@@ -41,6 +41,7 @@ app.post('/api/auth/login', login);
 
 // Protected routes (require JWT)
 app.get('/api/auth/me', authenticateJWT, getMe);
+app.put('/api/auth/profile', authenticateJWT, updateProfile);
 
 // CRM Customers routing
 app.get(

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   Users,
@@ -7,7 +7,10 @@ import {
   LogOut,
   Sun,
   Moon,
-  Database
+  Database,
+  Edit2,
+  Check,
+  X
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -17,6 +20,7 @@ interface SidebarProps {
   onLogout: () => void;
   darkTheme: boolean;
   setDarkTheme: (dark: boolean) => void;
+  onUpdateName: (newName: string) => Promise<void>;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -25,8 +29,29 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setActiveTab,
   onLogout,
   darkTheme,
-  setDarkTheme
+  setDarkTheme,
+  onUpdateName
 }) => {
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newName, setNewName] = useState(user.name);
+
+  useEffect(() => {
+    setNewName(user.name);
+  }, [user.name]);
+
+  const handleSaveName = async () => {
+    if (!newName.trim() || newName.trim() === user.name) {
+      setIsEditingName(false);
+      return;
+    }
+    try {
+      await onUpdateName(newName.trim());
+      setIsEditingName(false);
+    } catch (e) {
+      console.error(e);
+      alert('Failed to update name');
+    }
+  };
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -96,8 +121,55 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="user-avatar">
             {getInitials(user.name)}
           </div>
-          <div className="user-info">
-            <span className="user-name">{user.name}</span>
+          <div className="user-info" style={{ flex: 1 }}>
+            {isEditingName ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <input
+                  type="text"
+                  className="form-input"
+                  style={{
+                    padding: '0.25rem 0.5rem',
+                    fontSize: '0.85rem',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    color: 'white',
+                    width: '100%'
+                  }}
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSaveName();
+                    if (e.key === 'Escape') setIsEditingName(false);
+                  }}
+                  autoFocus
+                />
+                <button
+                  onClick={handleSaveName}
+                  style={{ background: 'none', border: 'none', color: '#10b981', cursor: 'pointer', display: 'flex' }}
+                >
+                  <Check size={16} />
+                </button>
+                <button
+                  onClick={() => setIsEditingName(false)}
+                  style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex' }}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.25rem' }}>
+                <span className="user-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '120px' }}>
+                  {user.name}
+                </span>
+                <button
+                  onClick={() => setIsEditingName(true)}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-on-sidebar)', cursor: 'pointer', opacity: 0.6 }}
+                  title="Edit Name"
+                >
+                  <Edit2 size={12} />
+                </button>
+              </div>
+            )}
             <span className="user-role" style={{ color: 'var(--primary)', fontWeight: 600, fontSize: '0.75rem' }}>
               {user.role}
             </span>
