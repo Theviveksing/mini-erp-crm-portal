@@ -104,7 +104,7 @@ export const DashboardOverview: React.FC<DashboardProps> = ({ user, token, setAc
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
             <span className="badge badge-info" style={{ gap: '0.35rem', fontWeight: 600 }}>
-              <Zap size={13} /> MongoDB Compass Sync
+              <Zap size={13} /> PostgreSQL Prisma Engine
             </span>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>• {currentDateStr}</span>
           </div>

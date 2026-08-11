@@ -8,7 +8,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: "mongodb://localhost:27017/mini_erp"
+      DATABASE_URL: "file:./dev.db"
       JWT_SECRET: "ci-secret-key-12345"
     steps:
     - uses: actions/checkout@v3
