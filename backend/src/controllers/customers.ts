@@ -62,7 +62,7 @@ export const getCustomerById = async (req: RequestWithUser, res: Response) => {
 
   try {
     const customer = await prisma.customer.findUnique({
-      where: { id: parseInt(id) },
+      where: { id },
       include: {
         followUps: {
           orderBy: { createdAt: 'desc' }
@@ -161,13 +161,13 @@ export const updateCustomer = async (req: RequestWithUser, res: Response) => {
   } = req.body;
 
   try {
-    const existing = await prisma.customer.findUnique({ where: { id: parseInt(id) } });
+    const existing = await prisma.customer.findUnique({ where: { id } });
     if (!existing) {
       return res.status(404).json({ error: 'Customer not found' });
     }
 
     const updatedCustomer = await prisma.customer.update({
-      where: { id: parseInt(id) },
+      where: { id },
       data: {
         name: name !== undefined ? name : existing.name,
         mobile: mobile !== undefined ? mobile : existing.mobile,
@@ -198,14 +198,14 @@ export const addFollowUpNote = async (req: RequestWithUser, res: Response) => {
   }
 
   try {
-    const customer = await prisma.customer.findUnique({ where: { id: parseInt(id) } });
+    const customer = await prisma.customer.findUnique({ where: { id } });
     if (!customer) {
       return res.status(404).json({ error: 'Customer not found' });
     }
 
     const newNote = await prisma.followUpNote.create({
       data: {
-        customerId: parseInt(id),
+        customerId: id,
         note,
         createdBy: req.user?.name || 'System'
       }
@@ -213,7 +213,7 @@ export const addFollowUpNote = async (req: RequestWithUser, res: Response) => {
 
     // Also update customer's last notes & update time
     await prisma.customer.update({
-      where: { id: parseInt(id) },
+      where: { id },
       data: {
         notes: note
       }

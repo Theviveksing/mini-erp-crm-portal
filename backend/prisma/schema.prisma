@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id           Int             @id @default(autoincrement())
+  id           String          @id @default(auto()) @map("_id") @db.ObjectId
   username     String          @unique
   passwordHash String
   name         String
@@ -20,7 +20,7 @@ model User {
 }
 
 model Customer {
-  id           Int            @id @default(autoincrement())
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   mobile       String
   email        String
@@ -37,8 +37,8 @@ model Customer {
 }
 
 model FollowUpNote {
-  id          Int      @id @default(autoincrement())
-  customerId  Int
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  customerId  String   @db.ObjectId
   customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   note        String
   createdBy   String
@@ -46,7 +46,7 @@ model FollowUpNote {
 }
 
 model Product {
-  id            Int             @id @default(autoincrement())
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   sku           String          @unique
   category      String
@@ -60,24 +60,24 @@ model Product {
 }
 
 model StockMovement {
-  id              Int      @id @default(autoincrement())
-  productId       Int
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId       String   @db.ObjectId
   product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantityChanged Int
   type            String   // IN, OUT
   reason          String
-  createdById     Int
+  createdById     String   @db.ObjectId
   createdBy       User     @relation(fields: [createdById], references: [id])
   createdAt       DateTime @default(now())
 }
 
 model Challan {
-  id            Int      @id @default(autoincrement())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
   challanNumber String   @unique
-  customerId    Int
+  customerId    String
   totalQuantity Int
   status        String   // DRAFT, CONFIRMED, CANCELLED
-  createdById   Int
+  createdById   String   @db.ObjectId
   createdBy     User     @relation(fields: [createdById], references: [id])
   snapshotData  String   // JSON string storing snapshots of customer & products
   createdAt     DateTime @default(now())

@@ -152,7 +152,7 @@ export const updateProduct = async (req: RequestWithUser, res: Response) => {
   } = req.body;
 
   try {
-    const existing = await prisma.product.findUnique({ where: { id: parseInt(id) } });
+    const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {
       return res.status(404).json({ error: 'Product not found' });
     }
@@ -165,7 +165,7 @@ export const updateProduct = async (req: RequestWithUser, res: Response) => {
     }
 
     const updated = await prisma.product.update({
-      where: { id: parseInt(id) },
+      where: { id },
       data: {
         name: name !== undefined ? name : existing.name,
         sku: sku !== undefined ? sku : existing.sku,
@@ -197,7 +197,7 @@ export const adjustStock = async (req: RequestWithUser, res: Response) => {
   }
 
   try {
-    const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
+    const product = await prisma.product.findUnique({ where: { id } });
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
     }
@@ -240,7 +240,7 @@ export const getProductMovements = async (req: RequestWithUser, res: Response) =
 
   try {
     const movements = await prisma.stockMovement.findMany({
-      where: { productId: parseInt(id) },
+      where: { productId: id },
       include: {
         createdBy: {
           select: { name: true, role: true }

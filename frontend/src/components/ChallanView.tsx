@@ -3,7 +3,7 @@ import { jsPDF } from 'jspdf';
 import { Search, Plus, Trash2, FileText, Download, Check, X, Printer, ShieldAlert } from 'lucide-react';
 
 interface Customer {
-  id: number;
+  id: string;
   name: string;
   businessName: string;
   address: string;
@@ -11,7 +11,7 @@ interface Customer {
 }
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   sku: string;
   unitPrice: number;
@@ -19,7 +19,7 @@ interface Product {
 }
 
 interface ChallanItem {
-  productId: number;
+  productId: string;
   name: string;
   sku: string;
   unitPrice: number;
@@ -27,9 +27,9 @@ interface ChallanItem {
 }
 
 interface Challan {
-  id: number;
+  id: string;
   challanNumber: string;
-  customerId: number;
+  customerId: string;
   customerName: string;
   customerBusinessName: string;
   totalQuantity: number;
@@ -91,7 +91,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
     }
   };
 
-  const fetchChallanDetails = async (id: number) => {
+  const fetchChallanDetails = async (id: string) => {
     try {
       const response = await fetch(`http://localhost:5000/api/challans/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -158,7 +158,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
     }
   };
 
-  const updateItemQty = (productId: number, qty: number) => {
+  const updateItemQty = (productId: string, qty: number) => {
     if (qty <= 0) {
       removeItem(productId);
       return;
@@ -168,7 +168,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
     ));
   };
 
-  const removeItem = (productId: number) => {
+  const removeItem = (productId: string) => {
     setSelectedItems(selectedItems.filter(item => item.product.id !== productId));
   };
 
@@ -218,7 +218,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
     }
   };
 
-  const handleConfirmChallan = async (id: number) => {
+  const handleConfirmChallan = async (id: string) => {
     if (!window.confirm('Are you sure you want to CONFIRM this challan? Stock levels will be reduced.')) return;
     try {
       const response = await fetch(`http://localhost:5000/api/challans/${id}/confirm`, {
@@ -237,7 +237,7 @@ export const ChallanView: React.FC<ChallanViewProps> = ({ token, userRole }) => 
     }
   };
 
-  const handleCancelChallan = async (id: number) => {
+  const handleCancelChallan = async (id: string) => {
     if (!window.confirm('Are you sure you want to CANCEL this challan? Stock will be returned if confirmed.')) return;
     try {
       const response = await fetch(`http://localhost:5000/api/challans/${id}/cancel`, {

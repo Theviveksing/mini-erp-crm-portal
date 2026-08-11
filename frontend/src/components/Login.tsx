@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { KeyRound, ShieldAlert } from 'lucide-react';
 
 interface LoginProps {
-  onLoginSuccess: (token: string, user: { id: number; name: string; username: string; role: string }) => void;
+  onLoginSuccess: (token: string, user: { id: string; name: string; username: string; role: string }) => void;
 }
 
 export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {

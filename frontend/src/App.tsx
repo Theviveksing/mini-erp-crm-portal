@@ -8,7 +8,7 @@ import { ChallanView } from './components/ChallanView';
 import './App.css';
 
 interface User {
-  id: number;
+  id: string;
   name: string;
   username: string;
   role: string;

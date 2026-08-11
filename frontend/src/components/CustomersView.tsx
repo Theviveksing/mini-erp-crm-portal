@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Search, Plus, Calendar, Edit, ClipboardList, Info } from 'lucide-react';
 
 interface Customer {
-  id: number;
+  id: string;
   name: string;
   mobile: string;
   email: string;
@@ -16,7 +16,7 @@ interface Customer {
 }
 
 interface FollowUpNote {
-  id: number;
+  id: string;
   note: string;
   createdBy: string;
   createdAt: string;
@@ -41,7 +41,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({ token, userRole })
   const [error, setError] = useState('');
 
   // Selected customer for detail drawer/modal
-  const [selectedCustomerId, setSelectedCustomerId] = useState<number | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
   const [selectedCustomerDetails, setSelectedCustomerDetails] = useState<CustomerWithDetails | null>(null);
   const [newFollowUpNote, setNewFollowUpNote] = useState('');
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
@@ -94,7 +94,7 @@ export const CustomersView: React.FC<CustomersViewProps> = ({ token, userRole })
     }
   };
 
-  const fetchCustomerDetails = async (id: number) => {
+  const fetchCustomerDetails = async (id: string) => {
     try {
       const response = await fetch(`http://localhost:5000/api/customers/${id}`, {
         headers: { Authorization: `Bearer ${token}` }

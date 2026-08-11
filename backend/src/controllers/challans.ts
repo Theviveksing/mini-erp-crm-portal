@@ -7,7 +7,7 @@ export const getChallans = async (req: RequestWithUser, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const status = (req.query.status as string) || '';
-    const customerId = req.query.customerId ? parseInt(req.query.customerId as string) : undefined;
+    const customerId = req.query.customerId ? (req.query.customerId as string) : undefined;
 
     const skip = (page - 1) * limit;
 
@@ -78,7 +78,7 @@ export const getChallanById = async (req: RequestWithUser, res: Response) => {
 
   try {
     const challan = await prisma.challan.findUnique({
-      where: { id: parseInt(id) },
+      where: { id },
       include: {
         createdBy: {
           select: { name: true, role: true }
@@ -126,7 +126,7 @@ export const createChallan = async (req: RequestWithUser, res: Response) => {
 
   try {
     const customer = await prisma.customer.findUnique({
-      where: { id: parseInt(customerId) }
+      where: { id: customerId }
     });
 
     if (!customer) {
@@ -158,7 +158,7 @@ export const createChallan = async (req: RequestWithUser, res: Response) => {
       // 2. Fetch and snapshot product details
       for (const item of items) {
         const product = await tx.product.findUnique({
-          where: { id: parseInt(item.productId) }
+          where: { id: item.productId }
         });
 
         if (!product) {
@@ -214,7 +214,7 @@ export const createChallan = async (req: RequestWithUser, res: Response) => {
       const newChallan = await tx.challan.create({
         data: {
           challanNumber,
-          customerId: parseInt(customerId),
+          customerId: customerId,
           totalQuantity,
           status,
           createdById: req.user!.id,
@@ -237,7 +237,7 @@ export const confirmChallan = async (req: RequestWithUser, res: Response) => {
 
   try {
     const challan = await prisma.challan.findUnique({
-      where: { id: parseInt(id) }
+      where: { id }
     });
 
     if (!challan) {
@@ -306,7 +306,7 @@ export const cancelChallan = async (req: RequestWithUser, res: Response) => {
 
   try {
     const challan = await prisma.challan.findUnique({
-      where: { id: parseInt(id) }
+      where: { id }
     });
 
     if (!challan) {
