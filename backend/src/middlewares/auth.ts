@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-12345';
 
 export interface UserPayload {
-  id: string;
+  id: number;
   username: string;
   name: string;
   role: string;

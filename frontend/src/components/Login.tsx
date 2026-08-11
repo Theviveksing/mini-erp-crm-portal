@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User, Lock, Eye, EyeOff, ShieldAlert, Building2, ChevronDown, ChevronUp, Check, ShieldCheck, UserPlus, LogIn, BadgeCheck } from 'lucide-react';
 
 interface LoginProps {
-  onLoginSuccess: (token: string, user: { id: string; name: string; username: string; role: string }) => void;
+  onLoginSuccess: (token: string, user: { id: number; name: string; username: string; role: string }) => void;
 }
 
 export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Search, Plus, Edit, AlertTriangle, ArrowUpDown, ClipboardList, Info } from 'lucide-react';
 
 interface Product {
-  id: string;
+  id: number;
   name: string;
   sku: string;
   category: string;
@@ -14,7 +14,7 @@ interface Product {
 }
 
 interface StockMovement {
-  id: string;
+  id: number;
   quantityChanged: number;
   type: string;
   reason: string;
@@ -97,7 +97,7 @@ export const InventoryView: React.FC<InventoryViewProps> = ({ token, userRole })
     }
   };
 
-  const fetchMovements = async (productId: string) => {
+  const fetchMovements = async (productId: number) => {
     setIsLogsLoading(true);
     try {
       const response = await fetch(`http://localhost:5000/api/products/${productId}/movements`, {
