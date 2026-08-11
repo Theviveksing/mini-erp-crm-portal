@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { authenticateJWT, requireRole } from './middlewares/auth';
-import { login, getMe, updateProfile } from './controllers/auth';
+import { login, register, getMe, updateProfile } from './controllers/auth';
 import {
   getCustomers,
   getCustomerById,
@@ -38,6 +38,7 @@ app.use(express.json());
 
 // Public routes
 app.post('/api/auth/login', login);
+app.post('/api/auth/register', register);
 
 // Protected routes (require JWT)
 app.get('/api/auth/me', authenticateJWT, getMe);

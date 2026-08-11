@@ -113,3 +113,90 @@ export const updateProfile = async (req: RequestWithUser, res: Response) => {
   }
 };
 
+export const register = async (req: RequestWithUser, res: Response) => {
+  const { username, password, name, role } = req.body;
+
+  if (!username || !password || !name || !role) {
+    return res.status(400).json({ error: 'All fields (username, password, name, role) are required' });
+  }
+
+  const validRoles = ['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS'];
+  const formattedRole = role.toUpperCase();
+  if (!validRoles.includes(formattedRole)) {
+    return res.status(400).json({ error: 'Role must be ADMIN, SALES, WAREHOUSE, or ACCOUNTS' });
+  }
+
+  const cleanUsername = username.trim().toLowerCase();
+
+  try {
+    const existing = await prisma.user.findUnique({
+      where: { username: cleanUsername }
+    });
+
+    if (existing) {
+      return res.status(400).json({ error: `Username '${cleanUsername}' is already taken` });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    let createdUser: { id: string; username: string; name: string; role: string };
+
+    try {
+      const newUser = await prisma.user.create({
+        data: {
+          username: cleanUsername,
+          passwordHash,
+          name: name.trim(),
+          role: formattedRole
+        }
+      });
+      createdUser = {
+        id: newUser.id,
+        username: newUser.username,
+        name: newUser.name,
+        role: newUser.role
+      };
+    } catch (createErr: any) {
+      console.warn('Prisma user create failed, executing standalone MongoDB raw fallback');
+      await prisma.$runCommandRaw({
+        insert: 'User',
+        documents: [
+          {
+            username: cleanUsername,
+            passwordHash,
+            name: name.trim(),
+            role: formattedRole,
+            createdAt: { $date: new Date().toISOString() },
+            updatedAt: { $date: new Date().toISOString() }
+          }
+        ]
+      });
+
+      const fetched = await prisma.user.findUnique({ where: { username: cleanUsername } });
+      if (!fetched) throw new Error('User creation raw fallback failed');
+      createdUser = {
+        id: fetched.id,
+        username: fetched.username,
+        name: fetched.name,
+        role: fetched.role
+      };
+    }
+
+    const token = jwt.sign(
+      { id: createdUser.id, username: createdUser.username, name: createdUser.name, role: createdUser.role },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    return res.status(201).json({
+      token,
+      user: createdUser
+    });
+  } catch (error: any) {
+    console.error('Register error:', error);
+    return res.status(500).json({ error: 'Failed to create user account' });
+  }
+};
+
+
