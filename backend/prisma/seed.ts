@@ -6,13 +6,13 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Start seeding...');
 
-  // 1. Clear Database
-  await prisma.followUpNote.deleteMany({});
-  await prisma.stockMovement.deleteMany({});
-  await prisma.challan.deleteMany({});
-  await prisma.customer.deleteMany({});
-  await prisma.product.deleteMany({});
-  await prisma.user.deleteMany({});
+  // 1. Clear Database (Disabled for standalone MongoDB)
+  // await prisma.followUpNote.deleteMany({});
+  // await prisma.stockMovement.deleteMany({});
+  // await prisma.challan.deleteMany({});
+  // await prisma.customer.deleteMany({});
+  // await prisma.product.deleteMany({});
+  // await prisma.user.deleteMany({});
 
   // 2. Create Users
   const salt = await bcrypt.genSalt(10);
