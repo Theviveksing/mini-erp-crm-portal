@@ -140,9 +140,94 @@ app.put(
   cancelChallan
 );
 
+// Interactive Swagger UI API Documentation
+app.get('/api-docs', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>Mini ERP + CRM API Documentation</title>
+      <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+      <style>
+        body { margin: 0; padding: 0; }
+        .swagger-ui .topbar { background-color: #0f172a; }
+      </style>
+    </head>
+    <body>
+      <div id="swagger-ui"></div>
+      <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+      <script>
+        window.onload = () => {
+          window.ui = SwaggerUIBundle({
+            url: '/openapi.json',
+            dom_id: '#swagger-ui',
+            deepLinking: true,
+            presets: [SwaggerUIBundle.presets.apis],
+          });
+        };
+      </script>
+    </body>
+    </html>
+  `);
+});
+
+app.get('/openapi.json', (req, res) => {
+  res.json({
+    openapi: '3.0.0',
+    info: {
+      title: 'Mini ERP + CRM Portal REST API',
+      version: '1.0.0',
+      description: 'API specification for authentication, CRM customer pipeline, inventory stock management, and sales challan processing.'
+    },
+    servers: [{ url: 'http://localhost:5000/api' }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+    paths: {
+      '/auth/login': {
+        post: {
+          summary: 'User Sign In',
+          requestBody: {
+            content: { 'application/json': { schema: { type: 'object', properties: { username: { type: 'string' }, password: { type: 'string' } } } } }
+          },
+          responses: { 200: { description: 'Authenticated successfully' } }
+        }
+      },
+      '/auth/register': {
+        post: {
+          summary: 'User Registration',
+          requestBody: {
+            content: { 'application/json': { schema: { type: 'object', properties: { username: { type: 'string' }, password: { type: 'string' }, name: { type: 'string' }, role: { type: 'string' } } } } }
+          },
+          responses: { 201: { description: 'User account created' } }
+        }
+      },
+      '/customers': {
+        get: { summary: 'List Customers', security: [{ bearerAuth: [] }], responses: { 200: { description: 'Customer list' } } },
+        post: { summary: 'Create Customer Lead', security: [{ bearerAuth: [] }], responses: { 201: { description: 'Customer created' } } }
+      },
+      '/products': {
+        get: { summary: 'List Products', security: [{ bearerAuth: [] }], responses: { 200: { description: 'Product list' } } },
+        post: { summary: 'Create Product', security: [{ bearerAuth: [] }], responses: { 201: { description: 'Product created' } } }
+      },
+      '/challans': {
+        get: { summary: 'List Sales Challans', security: [{ bearerAuth: [] }], responses: { 200: { description: 'Challan list' } } },
+        post: { summary: 'Create Sales Challan', security: [{ bearerAuth: [] }], responses: { 201: { description: 'Challan created' } } }
+      }
+    }
+  });
+});
+
 // Health Check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', time: new Date() });
+  res.json({ status: 'ok', time: new Date(), service: 'Mini ERP + CRM Backend API' });
 });
 
 // Global error handler
