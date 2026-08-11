@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: mini-erp-crm-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npx prisma db push && npx prisma db seed && npm start
+    envVars:
+      - key: DATABASE_URL
+        value: "file:./dev.db"
+      - key: JWT_SECRET
+        value: "super-secret-key-12345"
+      - key: PORT
+        value: "5000"
