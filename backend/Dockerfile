@@ -16,5 +16,5 @@ RUN npm run build
 
 EXPOSE 5000
 
-# Script to run migrations and start backend
-CMD npx prisma migrate deploy && npm run start
+# Script to sync database schema and start backend
+CMD npx prisma db push && npm run start
